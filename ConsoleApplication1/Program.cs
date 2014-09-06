@@ -4,12 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace vaxelpangar
 {
     class Program
     {
         static void Main(string[] args)
-        {hej
+        {
+            //Deklarera variabler, peangarna man ska betala, man ska ge och avrundningen mellan dessa.
+            double totalPrice;
+            uint recivedMoney;
+            double roundingOffAmount;
+
         }
     }
 }
