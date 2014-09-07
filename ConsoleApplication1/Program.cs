@@ -20,9 +20,40 @@ namespace vaxelpangar
             uint moneyBack; //recivedMoney - totalPrice
             uint value= { 500, 100, 50, 20, 10, 5, 1 };
             uint change = (SplitIntoDenominations(moneyBack, value)); //deviding change into value of the moneyBack
+            string kvitto;
 
-            totalPrice = ;
+
+
+            private static double ReadPositiveDouble(string writeThis) //Säkerställa att användaren har matat in ett korrekt värde
+            { 
+                double value = 0;
+                string input;
+                while (true)
+                {
+                
+                }
+            
+            }
+
+
+
+
+
+            private static uint ReadUint(string kvitto, Double totalPrice)
+            {
+            Console.Write("Skriv det belopp som du ska betala:");
+            totalPrice = double.Parse(System.Console.ReadLine());
+
+            Console.Clear();
+
+            Console.Write("Skriv det belopp som du ger till kassörskan:");
+            totalPrice = double.Parse(System.Console.ReadLine());
+
+            Console.Clear();
+
+            }
            
+            roundingOffAmount = 
 
         }
 
