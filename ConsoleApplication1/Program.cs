@@ -21,7 +21,7 @@ namespace vaxelpangar
             uint value= { 500, 100, 50, 20, 10, 5, 1 };
             uint change = (SplitIntoDenominations(moneyBack, value)); //deviding change into value of the moneyBack
 
-
+            totalPrice = ;
            
 
         }
