@@ -19,12 +19,20 @@ namespace vaxelpangar
             string toSmallAmount; //totalPrice > recivedMoney
             uint moneyBack; //recivedMoney - totalPrice
             uint value= { 500, 100, 50, 20, 10, 5, 1 };
-            uint change = (SplitIntoDenominations(moneyBack, value)); //deviding change into value of the moneyBack
-            string kvitto;
+            uint change = (SplitIntoDenominations(moneyBack, value)); //delar upp pengarna tillbaka i växelpengar
+            string receipt;  //Det som kommer skrivas ut i kvittot 
 
+            totalPrice = ReadPositiveDouble(totalPrice); //Summan får ett värde från metoden readPositivDouble(som checkar att användaren har matat in ett korrekt värde
 
+            roundingOffAmount = Math.Round(totalPrice, 0, MidpointRounding.AwayFromZero); //Avrundar summan. Till närmaste heltal.
 
-            private static double ReadPositiveDouble(string writeThis) //Säkerställa att användaren har matat in ett korrekt värde
+            recivedMoney = ReadUint(recivedMoney, (uint)roundingOffAmount); //Hämtar 
+
+        }
+
+            //do while sats för att kunna avsluta programmet med esc
+
+            private static double ReadPositiveDouble(double totalPrice) //Säkerställa att användaren har matat in ett korrekt värde
             { 
                 double value = 0;
                 string input;
@@ -52,8 +60,7 @@ namespace vaxelpangar
             Console.Clear();
 
             }
-           
-            roundingOffAmount = 
+            
 
         }
 
@@ -75,5 +82,5 @@ namespace vaxelpangar
 
             return change; 
         }
-    }
+    
 }
