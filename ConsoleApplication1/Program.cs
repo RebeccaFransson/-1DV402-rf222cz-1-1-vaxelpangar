@@ -15,20 +15,31 @@ namespace vaxelpangar
             double totalPrice; //readline
             uint recivedMoney; //readline
             double roundingOffAmount; //totalPrice - roundingOff-totalPrice
+            double roundingOffmarginal;
             string writePrice = "Skriv summan";
-
             string invaldAmount; //totalPrice < 0
-            string toSmallAmount; //totalPrice > recivedMoney
+            string toSmallAmount ="förliten summa"; //totalPrice > recivedMoney
             uint moneyBack; //recivedMoney - totalPrice
-            uint value= { 500, 100, 50, 20, 10, 5, 1 };
-            uint change = (SplitIntoDenominations(moneyBack, value)); //delar upp pengarna tillbaka i växelpengar
             string receipt;  //Det som kommer skrivas ut i kvittot 
+
+
+            uint change = (SplitIntoDenominations(moneyBack, value)); //delar upp pengarna tillbaka i växelpengar
 
             totalPrice = ReadPositiveDouble(totalPrice); //Summan får ett värde från metoden readPositivDouble(som checkar att användaren har matat in ett korrekt värde
 
             roundingOffAmount = Math.Round(totalPrice, 0, MidpointRounding.AwayFromZero); //Avrundar summan. Till närmaste heltal.
 
             recivedMoney = ReadUint(recivedMoney, (uint)roundingOffAmount); //Hämtar värdet från readuint-metoden
+
+            uint[] money = { 500, 100, 50, 20, 10, 5, 1 }; //deklarerar en variabel för de valörer som finns
+
+            roundingOffmarginal = roundingOffAmount - totalPrice; //räknar ut hur mkt som rundas av(växlen)
+
+            moneyBack = recivedMoney - (uint)roundingOffAmount;
+
+
+
+
 
         }
 
@@ -40,27 +51,21 @@ namespace vaxelpangar
                 string input;
                 while (true)
                 {
-                Console.Write(writePrice); //här skrivs ut "skriv summan"
-                    input = Console.ReadLine(); //användaren  skriver in vad den ska betala
+                Console.Write("Skriv ut summan som ska betalas"); //här skrivs ut "skriv summan"
+                    input = Console.ReadLine(); //användaren  skriver in vad den ska betala =input
                     try
                     {
                         value = double.Parse(input);
                         if (Math.Round(value, MidpointRounding.AwayFromZero) >= 0 ) //Avrundningen är större eller lika med noll
                          {
-                             throw new ArgumentException();
+                             break;
                          }
-                        break;
                     }
                 catch (Exception)
                     {
-                ViewMessage(String.Format(Resource1.parseError, input), true);
+                    Console.Write("Något är fel prova igen");
                 }
-                }
-                
-                else 
-                { 
-                
-                }
+              
             }
 
 
