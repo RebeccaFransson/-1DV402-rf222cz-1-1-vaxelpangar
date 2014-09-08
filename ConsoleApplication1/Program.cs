@@ -15,6 +15,8 @@ namespace vaxelpangar
             double totalPrice; //readline
             uint recivedMoney; //readline
             double roundingOffAmount; //totalPrice - roundingOff-totalPrice
+            string writePrice = "Skriv summan";
+
             string invaldAmount; //totalPrice < 0
             string toSmallAmount; //totalPrice > recivedMoney
             uint moneyBack; //recivedMoney - totalPrice
@@ -26,21 +28,39 @@ namespace vaxelpangar
 
             roundingOffAmount = Math.Round(totalPrice, 0, MidpointRounding.AwayFromZero); //Avrundar summan. Till närmaste heltal.
 
-            recivedMoney = ReadUint(recivedMoney, (uint)roundingOffAmount); //Hämtar 
+            recivedMoney = ReadUint(recivedMoney, (uint)roundingOffAmount); //Hämtar värdet från readuint-metoden
 
         }
 
             //do while sats för att kunna avsluta programmet med esc
 
-            private static double ReadPositiveDouble(double totalPrice) //Säkerställa att användaren har matat in ett korrekt värde
+            private static double ReadPositiveDouble(double totalPrice, string writePrice) //Säkerställa att användaren har matat in ett korrekt värde
             { 
                 double value = 0;
                 string input;
                 while (true)
                 {
+                Console.Write(writePrice); //här skrivs ut "skriv summan"
+                    input = Console.ReadLine(); //användaren  skriver in vad den ska betala
+                    try
+                    {
+                        value = double.Parse(input);
+                        if (Math.Round(value, MidpointRounding.AwayFromZero) >= 0 ) //Avrundningen är större eller lika med noll
+                         {
+                             throw new ArgumentException();
+                         }
+                        break;
+                    }
+                catch (Exception)
+                    {
+                ViewMessage(String.Format(Resource1.parseError, input), true);
+                }
+                }
+                
+                else 
+                { 
                 
                 }
-            
             }
 
 
