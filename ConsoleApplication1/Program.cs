@@ -16,20 +16,17 @@ namespace vaxelpangar
             uint recivedMoney; //readline
             double roundingOffAmount; //totalPrice - roundingOff-totalPrice
             double roundingOffmarginal;
-            string writePrice = "Skriv summan";
-            string invaldAmount; //totalPrice < 0
-            string toSmallAmount ="förliten summa"; //totalPrice > recivedMoney
             uint moneyBack; //recivedMoney - totalPrice
             string receipt;  //Det som kommer skrivas ut i kvittot 
 
 
             uint change = (SplitIntoDenominations(moneyBack, value)); //delar upp pengarna tillbaka i växelpengar
 
-            totalPrice = ReadPositiveDouble(totalPrice); //Summan får ett värde från metoden readPositivDouble(som checkar att användaren har matat in ett korrekt värde
+            totalPrice = ReadPositiveDouble(value); //Summan får ett värde från metoden readPositivDouble(som checkar att användaren har matat in ett korrekt värde
 
             roundingOffAmount = Math.Round(totalPrice, 0, MidpointRounding.AwayFromZero); //Avrundar summan. Till närmaste heltal.
 
-            recivedMoney = ReadUint(recivedMoney, (uint)roundingOffAmount); //Hämtar värdet från readuint-metoden
+            recivedMoney = ReadUint(recivedMoney); //Hämtar värdet från readuint-metoden
 
             uint[] money = { 500, 100, 50, 20, 10, 5, 1 }; //deklarerar en variabel för de valörer som finns
 
@@ -39,13 +36,21 @@ namespace vaxelpangar
 
 
 
+            Console.Write("Skriv det belopp som du ska betala:"); //var ska jag sätta dessa?
+            totalPrice = double.Parse(System.Console.ReadLine());
 
+            Console.Clear();
+
+            Console.Write("Skriv det belopp som du ger till kassörskan:");
+            totalPrice = double.Parse(System.Console.ReadLine());
+
+            Console.Clear();
 
         }
 
             //do while sats för att kunna avsluta programmet med esc
 
-            private static double ReadPositiveDouble(double totalPrice, string writePrice) //Säkerställa att användaren har matat in ett korrekt värde
+            private static double ReadPositiveDouble(double totalPrice) //Säkerställa att användaren har matat in ett korrekt värde
             { 
                 double value = 0;
                 string input;
@@ -58,31 +63,56 @@ namespace vaxelpangar
                         value = double.Parse(input);
                         if (Math.Round(value, MidpointRounding.AwayFromZero) >= 0 ) //Avrundningen är större eller lika med noll
                          {
-                             break;
+                             break; //om detta ovan stämmer kommer break hoppa över catch-satserna
                          }
                     }
-                catch (Exception)
+                catch (FormatException)
                     {
-                    Console.Write("Något är fel prova igen");
+                    Console.Write("Du har skrivit fel, du måste skriva siffror. Prova igen:");
                 }
-              
+              catch (OverflowException)
+                    {
+                    Console.Write("Du har skrivit fel, ditt tal kan inte vara mindre än 0kr. ");
+                }
+            }
+                return value;
             }
 
 
 
 
 
-            private static uint ReadUint(string kvitto, Double totalPrice)
+            private static uint ReadUint(Double totalPrice)
             {
-            Console.Write("Skriv det belopp som du ska betala:");
-            totalPrice = double.Parse(System.Console.ReadLine());
+                uint recivedMoney = 0;
+                    string input; //tilfällig varibel för att utföra denna metoden.
 
-            Console.Clear();
+                while (true) //loop för att jag inte vet hur många gånger användaren ska göra fel
+                {
+                    Console.Write("Skriv det belopp som du ger till kassörskan:"); //skriver ut meddelande och användaren tilldelar input ett värde
+                    input = Console.ReadLine();
 
-            Console.Write("Skriv det belopp som du ger till kassörskan:");
-            totalPrice = double.Parse(System.Console.ReadLine());
+                    try
+                    {
+                        recivedMoney = uint.Parse(input); //provar att parsa input till en uint
+                        if (recivedMoney < totalPrice) //pengarna användaren ska betala måste vara mindre än vad användaren ger, om ...
+                        {
+                            throw new OverflowException();//det är så kastas ett argument som berättar att detta inte fungerar
+                        }
+                        break; //om recivedMoney < totalPrice stämmer bryts satsen
 
-            Console.Clear();
+                    }
+                    catch (OverflowException)
+                    {
+                        Console.Write("Du kan tyvärr inte betala {0} med {1}", totalPrice, recivedMoney);
+                    }
+                    catch (FormatException)
+                    {
+                    Console.Write("Du har skrivit fel, du måste skriva siffror. Prova igen:");
+                }
+                    
+                }
+            
 
             }
             
