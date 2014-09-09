@@ -18,28 +18,43 @@ namespace vaxelpangar
             double roundingOffmarginal;
             uint moneyBack; //recivedMoney - totalPrice
             //string receipt;  //Det som kommer skrivas ut i kvittot 
+            
+            do
+            {
+                Console.Clear();
+                totalPrice = ReadPositiveDouble("Skriv det belopp som du ska betala:"); //Summan får ett värde från metoden readPositivDouble(som checkar att användaren har matat in ett korrekt värde
 
-            //uint change = SplitIntoDenominations(moneyBack, value); //delar upp pengarna tillbaka i växelpengar
+                roundingOffAmount = Math.Round(totalPrice, 0, MidpointRounding.AwayFromZero); //Avrundar summan. Till närmaste heltal.
 
-            totalPrice = ReadPositiveDouble("Skriv det belopp som du ska betala:"); //Summan får ett värde från metoden readPositivDouble(som checkar att användaren har matat in ett korrekt värde
+                recivedMoney = ReadUint("Skriv det erhållna beloppet:", totalPrice); //Hämtar värdet från readuint-metoden
 
-            roundingOffAmount = Math.Round(totalPrice, 0, MidpointRounding.AwayFromZero); //Avrundar summan. Till närmaste heltal.
+                uint[] money = { 500, 100, 50, 20, 10, 5, 1 }; //deklarerar en variabel för de valörer som finns
+                string[] bills = {"500", "100", "50", "20", "10", "5", "1" };
+                roundingOffmarginal = roundingOffAmount - totalPrice; //räknar ut hur mkt som rundas av(växlen)
 
-            recivedMoney = ReadUint("Skriv det erhållna beloppet:", totalPrice); //Hämtar värdet från readuint-metoden
+                moneyBack = recivedMoney - (uint)roundingOffAmount;
 
-            //uint[] money = { 500, 100, 50, 20, 10, 5, 1 }; //deklarerar en variabel för de valörer som finns
+                uint[] change = SplitIntoDenominations(moneyBack, money); //delar upp pengarna tillbaka i växelpengar
 
-            roundingOffmarginal = roundingOffAmount - totalPrice; //räknar ut hur mkt som rundas av(växlen)
+                Console.Clear();
 
-            moneyBack = recivedMoney - (uint)roundingOffAmount;
+                Console.WriteLine("Att betala: {0}", totalPrice);
+                Console.WriteLine("Erhållna pengar: {0}", recivedMoney);
+                Console.WriteLine("Öresavrundingen: {0}", roundingOffmarginal);
+                Console.WriteLine("Att betala efter öresavrundningen: {0}", roundingOffAmount);
+                Console.WriteLine("Pengar att få tillbaka: {0}", moneyBack);
+                
+                for (int i = 0; i < change.GetLength(0); i++)
+                {
+                    if (change[i] != 0)
+                    {
+                        Console.WriteLine("Pengar tillbaka {0} st av {1}-lapp(ar)", change[i], bills[i] );
+                    }
+                }
+                
 
-            Console.WriteLine("Att betala: {0}", totalPrice);
-            Console.WriteLine("Erhållna pengar: {0}", recivedMoney);
-            Console.WriteLine("Öresavrundingen: {0}", roundingOffmarginal);
-
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);//do while sats för att kunna avsluta programmet med esc
         }
-
-        //do while sats för att kunna avsluta programmet med esc
 
         private static double ReadPositiveDouble(string prompt) //kallar på meddelandet och frågar efter ett värde tillvalue(=totalprice) kontrollerar att det är större än 0
         {
@@ -103,25 +118,25 @@ namespace vaxelpangar
             return recivedMoney;
         }
 
-        //private static uint[] SplitIntoDenominations(uint moneyBack, uint value) //http://pastebin.com/GMGWGYNf
-        //{
-        //    uint[] change = new uint[7];
-        //    change[0] = moneyBack / 500;
-        //    moneyBack %= 500;
-        //    change[1] = moneyBack / 100;
-        //    moneyBack %= 100;
-        //    change[2] = moneyBack / 50;
-        //    moneyBack %= 50;
-        //    change[3] = moneyBack / 20;
-        //    moneyBack %= 20;
-        //    change[4] = moneyBack / 10;
-        //    moneyBack %= 10;
-        //    change[5] = moneyBack / 5;
-        //    moneyBack %= 5;
-        //    change[6] = moneyBack; //resten från pengarna, dvs enkronor
+        private static uint[] SplitIntoDenominations(uint moneyBack, uint[] money) //http://pastebin.com/GMGWGYNf
+        {
+            uint[] change = new uint[7];
+            change[0] = moneyBack / 500;
+            moneyBack %= 500;
+            change[1] = moneyBack / 100;
+            moneyBack %= 100;
+            change[2] = moneyBack / 50;
+            moneyBack %= 50;
+            change[3] = moneyBack / 20;
+            moneyBack %= 20;
+            change[4] = moneyBack / 10;
+            moneyBack %= 10;
+            change[5] = moneyBack / 5;
+            moneyBack %= 5;
+            change[6] = moneyBack; //resten från pengarna, dvs enkronor
 
-        //    return change;
-        //}
+            return change;
+        }
 
        
     }
