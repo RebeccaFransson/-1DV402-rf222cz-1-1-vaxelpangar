@@ -37,20 +37,22 @@ namespace vaxelpangar
                 uint[] change = SplitIntoDenominations(moneyBack, money); //delar upp pengarna tillbaka i växelpengar
 
                 Console.Clear();
-
-                Console.WriteLine("Att betala: {0}", totalPrice);
-                Console.WriteLine("Erhållna pengar: {0}", recivedMoney);
-                Console.WriteLine("Öresavrundingen: {0}", roundingOffmarginal);
-                Console.WriteLine("Att betala efter öresavrundningen: {0}", roundingOffAmount);
-                Console.WriteLine("Pengar att få tillbaka: {0}", moneyBack);
+                Console.WriteLine("KVITTO\n***************************");  //skrivs mitt kvitto ut
+                Console.WriteLine("Att betala: {0:c}", totalPrice);
+                Console.WriteLine("Erhållna pengar: {0:c}", recivedMoney);
+                Console.WriteLine("Öresavrundingen: {0:c}", roundingOffmarginal);
+                Console.WriteLine("Att betala efter öresavrundningen: {0:c}", roundingOffAmount);
+                Console.WriteLine("Pengar att få tillbaka: {0:c}", moneyBack);
+                Console.WriteLine("Växel tillbaka: ");
                 
                 for (int i = 0; i < change.GetLength(0); i++)
                 {
                     if (change[i] != 0)
                     {
-                        Console.WriteLine("Pengar tillbaka {0} st av {1}-lapp(ar)", change[i], bills[i] );
+                        Console.WriteLine("{0} st av {1}-lapp(ar)", change[i], bills[i] );
                     }
                 }
+                Console.WriteLine("****************************");
                 
 
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);//do while sats för att kunna avsluta programmet med esc
@@ -74,11 +76,21 @@ namespace vaxelpangar
                 }
                 catch (FormatException)
                 {
-                    Console.Write("Du har skrivit fel, du måste skriva siffror. Prova igen:");
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("FEL! '{0}', du måste skriva siffror. Prova igen!", input);
+                    Console.ResetColor();
                 }
                 catch (OverflowException)
                 {
-                    Console.Write("Du har skrivit fel, ditt tal kan inte vara mindre än 0kr. ");
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("FÖRSTORT! Ditt tal, '{0}' är förstort.", input);
+                    Console.ResetColor();
+                }
+                if (int.Parse(input) < 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("FÖRLITET! Ditt tal, '{0}' kan inte tolkas som en giltig summa pengar.", input);
+                    Console.ResetColor();
                 }
             }
 
@@ -107,11 +119,15 @@ namespace vaxelpangar
                 }
                 catch (OverflowException)
                 {
-                    Console.Write("Du kan tyvärr inte betala {0} med {1}", totalPrice, recivedMoney);
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Du kan tyvärr inte betala {0:c} med {1:c}, använda mer pengar!", totalPrice, recivedMoney);
+                    Console.ResetColor();
                 }
                 catch (FormatException)
                 {
-                    Console.Write("Du har skrivit fel, du måste skriva siffror. Prova igen:");
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Du har skrivit fel, du måste skriva heltal.  Glöm inte att använda punkt(.) istället för komma(,). Prova igen!");
+                    Console.ResetColor();
                 }
             }
 
