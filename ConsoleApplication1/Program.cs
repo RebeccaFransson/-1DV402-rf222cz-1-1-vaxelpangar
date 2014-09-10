@@ -15,59 +15,130 @@ namespace vaxelpangar
             double totalPrice; //readline
             uint recivedMoney; //readline
             double roundingOffAmount; //totalPrice - roundingOff-totalPrice
-            string invaldAmount; //totalPrice < 0
-            string toSmallAmount; //totalPrice > recivedMoney
+            double roundingOffmarginal;
             uint moneyBack; //recivedMoney - totalPrice
-            uint value= { 500, 100, 50, 20, 10, 5, 1 };
-            uint change = (SplitIntoDenominations(moneyBack, value)); //delar upp pengarna tillbaka i växelpengar
-            string receipt;  //Det som kommer skrivas ut i kvittot 
-
-            totalPrice = ReadPositiveDouble(totalPrice); //Summan får ett värde från metoden readPositivDouble(som checkar att användaren har matat in ett korrekt värde
-
-            roundingOffAmount = Math.Round(totalPrice, 0, MidpointRounding.AwayFromZero); //Avrundar summan. Till närmaste heltal.
-
-            recivedMoney = ReadUint(recivedMoney, (uint)roundingOffAmount); //Hämtar 
-
-        }
-
-            //do while sats för att kunna avsluta programmet med esc
-
-            private static double ReadPositiveDouble(double totalPrice) //Säkerställa att användaren har matat in ett korrekt värde
-            { 
-                double value = 0;
-                string input;
-                while (true)
-                {
-                
-                }
+            //string receipt;  //Det som kommer skrivas ut i kvittot 
             
-            }
-
-
-
-
-
-            private static uint ReadUint(string kvitto, Double totalPrice)
+            do
             {
-            Console.Write("Skriv det belopp som du ska betala:");
-            totalPrice = double.Parse(System.Console.ReadLine());
+                Console.Clear();
+                totalPrice = ReadPositiveDouble("Skriv det belopp som du ska betala:"); //Summan får ett värde från metoden readPositivDouble(som checkar att användaren har matat in ett korrekt värde
 
-            Console.Clear();
+                roundingOffAmount = Math.Round(totalPrice, 0, MidpointRounding.AwayFromZero); //Avrundar summan. Till närmaste heltal.
 
-            Console.Write("Skriv det belopp som du ger till kassörskan:");
-            totalPrice = double.Parse(System.Console.ReadLine());
+                recivedMoney = ReadUint("Skriv det erhållna beloppet:", totalPrice); //Hämtar värdet från readuint-metoden
 
-            Console.Clear();
+                uint[] money = { 500, 100, 50, 20, 10, 5, 1 }; //deklarerar en variabel för de valörer som finns
+                string[] bills = {"500", "100", "50", "20", "10", "5", "1" };
+                roundingOffmarginal = roundingOffAmount - totalPrice; //räknar ut hur mkt som rundas av(växlen)
 
-            }
-            
+                moneyBack = recivedMoney - (uint)roundingOffAmount;
 
+                uint[] change = SplitIntoDenominations(moneyBack, money); //delar upp pengarna tillbaka i växelpengar
+
+                Console.Clear();
+                Console.WriteLine("KVITTO\n***************************");  //skrivs mitt kvitto ut
+                Console.WriteLine("Att betala: {0:c}", totalPrice);
+                Console.WriteLine("Erhållna pengar: {0:c}", recivedMoney);
+                Console.WriteLine("Öresavrundingen: {0:c}", roundingOffmarginal);
+                Console.WriteLine("Att betala efter öresavrundningen: {0:c}", roundingOffAmount);
+                Console.WriteLine("Pengar att få tillbaka: {0:c}", moneyBack);
+                Console.WriteLine("Växel tillbaka: ");
+                
+                for (int i = 0; i < change.GetLength(0); i++)
+                {
+                    if (change[i] != 0)
+                    {
+                        Console.WriteLine("{0} st av {1}-lapp(ar)", change[i], bills[i] );
+                    }
+                }
+                Console.WriteLine("****************************");
+                
+
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);//do while sats för att kunna avsluta programmet med esc
         }
 
-        private static uint SplitIntoDenominations(uint moneyBack, uint value) //http://pastebin.com/GMGWGYNf
+        private static double ReadPositiveDouble(string prompt) //kallar på meddelandet och frågar efter ett värde tillvalue(=totalprice) kontrollerar att det är större än 0
         {
+            double value = 0;
+            string input;
+            while (true)
+            {
+                Console.Write(prompt); //här skrivs ut "skriv summan"
+                input = Console.ReadLine(); //användaren  skriver in vad den ska betala =input
+                try
+                {
+                    value = double.Parse(input);
+                    if (Math.Round(value, MidpointRounding.AwayFromZero) >= 0) //Avrundningen är större eller lika med noll
+                    {
+                        break; //om detta ovan stämmer kommer break hoppa över catch-satserna
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("FEL! '{0}', du måste skriva siffror. Prova igen!", input);
+                    Console.ResetColor();
+                }
+                catch (OverflowException)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("FÖRSTORT! Ditt tal, '{0}' är förstort.", input);
+                    Console.ResetColor();
+                }
+                if (int.Parse(input) < 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("FÖRLITET! Ditt tal, '{0}' kan inte tolkas som en giltig summa pengar.", input);
+                    Console.ResetColor();
+                }
+            }
+
+            return value;
+        }
+
+        private static uint ReadUint(string prompt, double totalPrice)
+        {
+            uint recivedMoney = 0;
+            string input; //tilfällig varibel för att utföra denna metoden.
+            //string prompt = "Skriv det belopp som du betalar med:";
+
+            while (true) //loop för att jag inte vet hur många gånger användaren ska göra fel
+            {
+                Console.Write(prompt); //skriver ut meddelande och användaren tilldelar input ett värde
+                input = Console.ReadLine();
+
+                try
+                {
+                    recivedMoney = uint.Parse(input); //provar att parsa input till en uint
+                    if (recivedMoney < totalPrice) //pengarna användaren ska betala måste vara mindre än vad användaren ger, om ...
+                    {
+                        throw new OverflowException();//det är så kastas ett argument som berättar att detta inte fungerar
+                    }
+                    break; //om recivedMoney < totalPrice stämmer bryts satsen
+                }
+                catch (OverflowException)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Du kan tyvärr inte betala {0:c} med {1:c}, använda mer pengar!", totalPrice, recivedMoney);
+                    Console.ResetColor();
+                }
+                catch (FormatException)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Du har skrivit fel, du måste skriva heltal.  Glöm inte att använda punkt(.) istället för komma(,). Prova igen!");
+                    Console.ResetColor();
+                }
+            }
+
+            return recivedMoney;
+        }
+
+        private static uint[] SplitIntoDenominations(uint moneyBack, uint[] money) //http://pastebin.com/GMGWGYNf
+        {
+            uint[] change = new uint[7];
             change[0] = moneyBack / 500;
-            moneyBack %= 500; 
+            moneyBack %= 500;
             change[1] = moneyBack / 100;
             moneyBack %= 100;
             change[2] = moneyBack / 50;
@@ -78,9 +149,11 @@ namespace vaxelpangar
             moneyBack %= 10;
             change[5] = moneyBack / 5;
             moneyBack %= 5;
-            change[6] = moneyBack; //?
+            change[6] = moneyBack; //resten från pengarna, dvs enkronor
 
-            return change; 
+            return change;
         }
-    
+
+       
+    }
 }
